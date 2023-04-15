@@ -26,12 +26,11 @@ def makePrediction(request):
         
         if 'resonance_file' not in request.data or 'metadata' not in request.data or 'email' not in request.data:
             return Response({'error': 'No data uploaded, some of the data is missing.'}, status=status.HTTP_400_BAD_REQUEST)
-            
-        nifiti_file_obj = request.FILES.get['resonance_file']
-        metadata_file_obj = request.FILES.get['metadata']
-        email =  request.POST.get('email')
         
-    
+        nifiti_file_obj = request.data['resonance_file']
+        metadata_file_obj = request.data['metadata']
+        email =  request.data['email']
+        
         if not nifiti_file_obj.name.endswith('.nii.gz') or not metadata_file_obj.name.endswith('.json'):
             print("Incorrect File 2")
             return Response({'error': 'Files must be a NIFTI and a JSON.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -39,7 +38,6 @@ def makePrediction(request):
     
         nifiti_file_contents = nifiti_file_obj.read()
         metadata_file_contents = metadata_file_obj.read()
-        
         
         
         nifiti_file_contents_b64 = base64.b64encode(nifiti_file_contents).decode('utf-8')
