@@ -2,6 +2,7 @@ import base64
 import json
 import os
 from celery import Celery
+import celery
 import nibabel as nib
 import os
 from model_prediction.CNN import cnn_model
@@ -15,7 +16,10 @@ from modelService.celery import app
 def process_nifti(niftiFile_base64,niftiFile_name,metadata_base64, email):
     try:   
         
+        print("TASK ID: ",celery.current_task.request.id)
+        
         print(f"WORKER CONNECTED TO VIEW!!!!!:{timezone.localtime(timezone.now())}")
+                
         nifti_file_contents = base64.b64decode(niftiFile_base64.encode('utf-8'))
         
         metadata_file_contents = base64.b64decode(metadata_base64.encode('utf-8'))
@@ -59,15 +63,15 @@ def process_nifti(niftiFile_base64,niftiFile_name,metadata_base64, email):
         
                 
         print("Uploading result to database...")
-        ResonanceResult.objects.create(predicton=predicted_label, metadata=file_contents, 
+        ResonanceResult.objects.create(task_id=f"{celery.current_task.request.id}",predicton=predicted_label, metadata=file_contents, 
                                        fileName=splitFileName[0],email=email,
                                        fileExtension=".nii.gz",completeFileName=niftiFile_name,
                                        predicton_date=f"{timezone.localtime(timezone.now())}")
         
-        # print("Deleting data...")
+        print("Deleting data...")
         
-        # os.remove(nifiti_file_temp_path)
-        # os.remove(metadata_file_contents)
+        os.remove(nifiti_file_temp_path)
+        os.remove(metadata_file_contents)
         
         
         return "Ok"

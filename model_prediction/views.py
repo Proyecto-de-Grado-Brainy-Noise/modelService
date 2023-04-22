@@ -1,3 +1,4 @@
+import os
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -20,9 +21,11 @@ import base64
 def makePrediction(request):
     
     try:       
-    
+        dag_path=os.getcwd()
         print("++------------------------------------------------------------------------+++++")
         print(f"Getting file info: {timezone.localtime(timezone.now())}")
+        print("MAIN PATH: ",dag_path)
+        print(request.data)
         
         if 'resonance_file' not in request.data or 'metadata' not in request.data or 'email' not in request.data:
             return Response({'error': 'No data uploaded, some of the data is missing.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -51,9 +54,8 @@ def makePrediction(request):
                                    metadata_file_contents_b64,
                                    email
                                    )
-        
-        
-        return Response({'message': 'NIfTI file uploaded successfully'},status=status.HTTP_200_OK)
+            
+        return Response({'message': 'NIFTI file uploaded successfully', "task_id":result.id},status=status.HTTP_200_OK)
         
     except Exception as e:
        return Response({'error':"Server error","description":e}, status=status.HTTP_400_BAD_REQUEST)
