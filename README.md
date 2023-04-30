@@ -18,7 +18,7 @@ Once the complete project is deployed the IP address will change and probably it
 ### Endpoints
 | Request Type | Endpoints |Description|Params|Body|
 | ------ | ------ | ------ | ------ | ------ |
-| POST | http://localhost:9004/model/makePrediction/ |This endpoint has the unique purpose to received the nifiti file and generate the prediction of the CNN and then it summits the result to the mongo database||**resonance_file**(Nifti file),  **metadata**(JSON file),  **email**(String)|
+| POST | http://localhost:9004/model/makePrediction/ |This endpoint has the unique purpose to received the nifiti file and generate the prediction of the CNN and then it summits the result to the mongo database, it returns a task_id which can be use to make a query in the queryResultService||**resonance_file**(Nifti file),  **metadata**(JSON file),  **email**(String)|
 
 👽 Feel free to make any changes in the code 👽
 
