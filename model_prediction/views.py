@@ -34,13 +34,11 @@ def makePrediction(request):
         email =  request.data['email']
         
         if('metadata' in request.data):
-            print("YES INNNNN")
             metadata_file_obj = request.data['metadata']
             
             metadata_file_contents = metadata_file_obj.read()
             metadata_file_contents_b64 = base64.b64encode(metadata_file_contents).decode('utf-8')
         else:
-            print("NOOO INNNNN")
             metadata_file_obj=None
             metadata_file_contents_b64=None
         

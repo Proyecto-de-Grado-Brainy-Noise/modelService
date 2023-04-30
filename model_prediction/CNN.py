@@ -13,11 +13,12 @@ class CNN_Model():
         
     def getPrediction(self,img_data):
         split_data=self.getSplitNifti(img_data)
-        print(split_data.shape)
         pr= self.model.predict(split_data)
         predictions=np.argmax(pr, axis=1)
         predicted_label=int(stats.mode(predictions, keepdims=False)[0])
-        return predicted_label 
+        prediction_count = np.count_nonzero(predictions == predicted_label)
+        confidence=prediction_count/len(predictions)
+        return predicted_label, confidence
     
     
     def getSplitNifti(self,img_data):

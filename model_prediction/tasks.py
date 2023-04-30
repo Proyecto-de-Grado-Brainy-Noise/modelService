@@ -39,7 +39,7 @@ def process_nifti(niftiFile_base64,niftiFile_name,metadata_base64, email):
                 
         cnn_model.model.summary()
         print("Generating CNN prediction")
-        predicted_label=cnn_model.getPrediction(data)
+        predicted_label,label_confidence=cnn_model.getPrediction(data)
         print("Label: ",predicted_label)
             
         splitFileName=niftiFile_name.split(".")
@@ -49,11 +49,12 @@ def process_nifti(niftiFile_base64,niftiFile_name,metadata_base64, email):
             metadata_file_contents = base64.b64decode(metadata_base64.encode('utf-8'))    
             file_contents= json.loads(metadata_file_contents)    
         else:
-            file_contents={"Value":"None"}    
+            file_contents={"Value":"None"}
                         
         print("Uploading result to database...")
-        ResonanceResult.objects.create(task_id=f"{celery.current_task.request.id}",predicton=predicted_label, 
-                                       metadata=file_contents, 
+        
+        ResonanceResult.objects.create(task_id=f"{celery.current_task.request.id}",
+                                       predicton=predicted_label,confidence=label_confidence,metadata=file_contents, 
                                        fileName=splitFileName[0],email=email,
                                        fileExtension=".nii.gz",completeFileName=niftiFile_name,
                                        predicton_date=f"{timezone.localtime(timezone.now())}")

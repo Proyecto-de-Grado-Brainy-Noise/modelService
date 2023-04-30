@@ -8,6 +8,7 @@ class ResonanceResult(models.Model):
     fileExtension = models.CharField(max_length=20)
     completeFileName=models.CharField(max_length=255)
     predicton= models.IntegerField()    
+    confidence= models.FloatField()
     predicton_date= models.CharField(max_length=255)
     email= models.CharField(max_length=512)
     metadata = models.JSONField(null=True)
