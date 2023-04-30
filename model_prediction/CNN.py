@@ -16,7 +16,6 @@ class CNN_Model():
         print(split_data.shape)
         pr= self.model.predict(split_data)
         predictions=np.argmax(pr, axis=1)
-        predictions=predictions+1
         predicted_label=int(stats.mode(predictions, keepdims=False)[0])
         return predicted_label 
     

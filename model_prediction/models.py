@@ -10,7 +10,7 @@ class ResonanceResult(models.Model):
     predicton= models.IntegerField()    
     predicton_date= models.CharField(max_length=255)
     email= models.CharField(max_length=512)
-    metadata = models.JSONField()
+    metadata = models.JSONField(null=True)
     
     
     

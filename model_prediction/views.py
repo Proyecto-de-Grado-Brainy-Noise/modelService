@@ -27,25 +27,31 @@ def makePrediction(request):
         print(f"Getting file info at: {timezone.localtime(timezone.now())}")
    
    
-        if 'resonance_file' not in request.data or 'metadata' not in request.data or 'email' not in request.data:
+        if 'resonance_file' not in request.data or 'email' not in request.data:
             return Response({'error': 'No data uploaded, some of the data is missing.'}, status=status.HTTP_400_BAD_REQUEST)
         
         nifiti_file_obj = request.data['resonance_file']
-        metadata_file_obj = request.data['metadata']
         email =  request.data['email']
         
-        if not nifiti_file_obj.name.endswith('.nii.gz') or not metadata_file_obj.name.endswith('.json'):
-            return Response({'error': 'Files must be a NIFTI and a JSON.'}, status=status.HTTP_400_BAD_REQUEST)
-    
+        if('metadata' in request.data):
+            print("YES INNNNN")
+            metadata_file_obj = request.data['metadata']
+            
+            metadata_file_contents = metadata_file_obj.read()
+            metadata_file_contents_b64 = base64.b64encode(metadata_file_contents).decode('utf-8')
+        else:
+            print("NOOO INNNNN")
+            metadata_file_obj=None
+            metadata_file_contents_b64=None
         
+    
+        if not nifiti_file_obj.name.endswith('.nii.gz') or (metadata_file_obj!=None and not metadata_file_obj.name.endswith('.json') ):
+                return Response({'error': 'Files must be a NIFTI and a JSON.'}, status=status.HTTP_400_BAD_REQUEST)
     
         nifiti_file_contents = nifiti_file_obj.read()
-        metadata_file_contents = metadata_file_obj.read()
-        
-        
         nifiti_file_contents_b64 = base64.b64encode(nifiti_file_contents).decode('utf-8')
         
-        metadata_file_contents_b64 = base64.b64encode(metadata_file_contents).decode('utf-8')
+        
         
         print("Processing and adding to queue Nifti File...")
             
